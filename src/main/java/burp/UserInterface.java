@@ -14,17 +14,18 @@ public class UserInterface {
 	private static DefaultTableModel varsTableModel;
 	private static JTable varsTable;
 	private static JTextField nameTextField;
-	private static JTextField valueTextField;
+	private static JTextArea valueTextArea;
 
 	public static void create(MontoyaApi api) {
 		JPanel gridPanel = new JPanel();
 		gridPanel.setLayout(new GridBagLayout());
-		gridPanel.setPreferredSize(new Dimension(800, 500));
+		gridPanel.setPreferredSize(new Dimension(800, 700));
 		gridPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		gridPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
 
 		Dimension btnDimension = new Dimension(100, 25);
-		Dimension textFieldDimension = new Dimension(250, 25);
+		Dimension textFieldDimension = new Dimension(380, 25);
+		Dimension textAreaDimension = new Dimension(380, 225);
 		GridBagConstraints c = new GridBagConstraints();
 
 		// Row 1
@@ -82,12 +83,16 @@ public class UserInterface {
 		c.insets.left = 0;
 		gridPanel.add(valueLabel, c);
 
-		valueTextField = new JTextField("example value");
-		valueTextField.setPreferredSize(textFieldDimension);
+		valueTextArea = new JTextArea("example value");
+		valueTextArea.setLineWrap(true);
+
+		JScrollPane valueScrollPane = new JScrollPane(valueTextArea);
+		valueScrollPane.setPreferredSize(textAreaDimension);
+		valueScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 1;
-		gridPanel.add(valueTextField, c);
+		gridPanel.add(valueScrollPane, c);
 
 		JButton addBtn = new JButton("Add");
 		addBtn.setPreferredSize(btnDimension);
@@ -100,7 +105,7 @@ public class UserInterface {
 					return;
 				}
 
-				String value = valueTextField.getText();
+				String value = valueTextArea.getText();
 				if (value == "") {
 					return;
 				}
@@ -109,12 +114,12 @@ public class UserInterface {
 				varsTableModel.addRow(row);
 
 				nameTextField.setText("");
-				valueTextField.setText("");
+				valueTextArea.setText("");
 			}
 		});
 
 		c.gridx = 2;
-		c.anchor = GridBagConstraints.EAST;
+		c.anchor = GridBagConstraints.SOUTHEAST;
 		gridPanel.add(addBtn, c);
 
 		// Row 4
@@ -158,7 +163,7 @@ public class UserInterface {
 				}
 
 				nameTextField.setText((String)varsTableModel.getValueAt(selectedRow, 0));
-				valueTextField.setText((String)varsTableModel.getValueAt(selectedRow, 1));
+				valueTextArea.setText((String)varsTableModel.getValueAt(selectedRow, 1));
 
 				varsTableModel.removeRow(selectedRow);
 			}
