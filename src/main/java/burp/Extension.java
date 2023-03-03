@@ -1,11 +1,13 @@
 package burp;
 
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.core.ToolType;
 import burp.api.montoya.http.handler.*;
+import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.http.message.requests.HttpRequest;
 
 public class Extension implements BurpExtension, HttpHandler {
@@ -43,7 +45,15 @@ public class Extension implements BurpExtension, HttpHandler {
 			}
 		}
 
-		return RequestToBeSentAction.continueWith(HttpRequest.httpRequest(requestToBeSent.httpService(), request));
+		// Update Content-Length if it exists
+		HttpRequest modified = HttpRequest.httpRequest(requestToBeSent.httpService(), request);
+		Optional<HttpHeader> contentLength = modified.headers().stream().filter(h -> h.name().equalsIgnoreCase("Content-Length")).findFirst();
+		if (contentLength.isPresent()) {
+			int bodyLength = modified.bodyToString().length();
+			modified = modified.withUpdatedHeader(contentLength.get().name(), Integer.toString(bodyLength));
+		}
+		
+		return RequestToBeSentAction.continueWith(modified);
 	}
 
 	@Override
