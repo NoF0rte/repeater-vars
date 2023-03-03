@@ -8,16 +8,21 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
 
-public class UserInterface {
-	public static final int textHeight = new JTextField().getPreferredSize().height;
-	
-	private static DefaultTableModel varsTableModel;
-	private static JTable varsTable;
-	private static JTextField nameTextField;
-	private static JTextArea valueTextArea;
-	private static JButton modifyBtn;
+public class SuiteTab extends JPanel {
+	private DefaultTableModel varsTableModel;
+	private JTable varsTable;
+	private JTextField nameTextField;
+	private JTextArea valueTextArea;
+	private JButton modifyBtn;
 
-	public static void create(MontoyaApi api) {
+	private final MontoyaApi api;
+
+	public SuiteTab(MontoyaApi api) {
+		this.api = api;
+		initialize();
+	}
+
+	private void initialize() {
 		JPanel gridPanel = new JPanel();
 		gridPanel.setLayout(new GridBagLayout());
 		gridPanel.setPreferredSize(new Dimension(800, 700));
@@ -234,9 +239,6 @@ public class UserInterface {
 		c.gridy = 4;
 		gridPanel.add(saveBtn, c);
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.add(gridPanel);
-
-		api.userInterface().registerSuiteTab("Repeater Vars", mainPanel);
+		add(gridPanel);
 	}
 }
