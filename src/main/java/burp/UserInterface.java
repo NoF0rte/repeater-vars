@@ -15,6 +15,7 @@ public class UserInterface {
 	private static JTable varsTable;
 	private static JTextField nameTextField;
 	private static JTextArea valueTextArea;
+	private static JButton modifyBtn;
 
 	public static void create(MontoyaApi api) {
 		JPanel gridPanel = new JPanel();
@@ -138,6 +139,14 @@ public class UserInterface {
 		}
 
 		varsTable = new JTable(varsTableModel);
+		varsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		varsTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					modifyBtn.doClick();
+				}
+			}
+		 });
 
 		JScrollPane scrollPane = new JScrollPane(varsTable);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -149,7 +158,7 @@ public class UserInterface {
 		c.gridwidth = 3;
 		gridPanel.add(scrollPane, c);
 
-		JButton modifyBtn = new JButton("Modify");
+		modifyBtn = new JButton("Modify");
 		modifyBtn.setPreferredSize(btnDimension);
 		modifyBtn.setMinimumSize(btnDimension);
 		modifyBtn.setMaximumSize(btnDimension);
