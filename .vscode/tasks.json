@@ -9,7 +9,7 @@
 				"${dependencies}"
 			],
 			"problemMatcher": [],
-			"label": "java (buildArtifact): ws-fuzzer",
+			"label": "java (buildArtifact): repeater-vars",
 			"group": {
 				"kind": "build",
 				"isDefault": true

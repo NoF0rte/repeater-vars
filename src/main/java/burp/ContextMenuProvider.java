@@ -28,7 +28,7 @@ public class ContextMenuProvider implements ContextMenuItemsProvider {
 
 	@Override
 	public List<Component> provideMenuItems(ContextMenuEvent event) {
-		if (!event.isFrom(InvocationType.INTRUDER_PAYLOAD_POSITIONS, InvocationType.MESSAGE_EDITOR_REQUEST) && !event.isFromTool(ToolType.INTRUDER, ToolType.REPEATER)) {
+		if (!event.isFrom(InvocationType.MESSAGE_EDITOR_REQUEST) && !event.isFromTool(ToolType.REPEATER)) {
 			return null;
 		}
 
@@ -36,10 +36,19 @@ public class ContextMenuProvider implements ContextMenuItemsProvider {
 			return null;
 		}
 
+		MessageEditorHttpRequestResponse editor = event.messageEditorRequestResponse().get();
+
 		List<Component> items = new ArrayList<>();
+		JMenuItem toIntruder = new JMenuItem("Send to Intruder");
+		toIntruder.addActionListener(e -> {
+			HttpRequest req = editor.requestResponse().request();
+			HttpRequest modified = Extension.replaceVars(req);
+			api.intruder().sendToIntruder(modified);
+		});
+		items.add(toIntruder);
+
 		JMenu menu = new JMenu("Insert");
 
-		MessageEditorHttpRequestResponse editor = event.messageEditorRequestResponse().get();
 		for (String var : Config.instance().variables().keySet()) {
 			JMenuItem item = new JMenuItem(var);
 			item.addActionListener(e -> {
@@ -50,7 +59,7 @@ public class ContextMenuProvider implements ContextMenuItemsProvider {
 		}
 		items.add(menu);
 
-		if (event.messageEditorRequestResponse().get().selectionOffsets().isPresent()) {
+		if (editor.selectionOffsets().isPresent()) {
 			String selected = getSelectedText(editor);
 
 			if (!selected.isBlank() && !selected.isEmpty()) {
