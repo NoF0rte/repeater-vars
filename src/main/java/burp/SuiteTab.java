@@ -121,6 +121,15 @@ public class SuiteTab extends JPanel {
 
 				nameTextField.setText("");
 				valueTextArea.setText("");
+
+				Hashtable<String, String> variables = Config.instance().variables();
+				if (variables.containsKey(name)) {
+					variables.replace(name, value);
+				} else {
+					variables.put(name, value);
+				}
+
+				Config.instance().setVariables(variables);
 			}
 		});
 
